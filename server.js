@@ -1,12 +1,16 @@
-const http = require('http');
+const express = require('express')
 
-const server = http.createServer((req, res) => {
-    console.log('run request ...')
-    res.setHeader('Content-Type', 'text/html');
-    res.write('<h3> Chào </h3>');
-    res.end();
+const app = express()
+const port = 2209
+
+app.get('/', (req, res) => {
+    res.send('Hello Phuong Dinh!')
 })
 
-server.listen(3000, 'localhost', () => {
-    console.log('Node.JS is running');
+app.get('/about', (req, res) => {
+    res.send('Toi la yangho!')
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
 })
