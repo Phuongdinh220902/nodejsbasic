@@ -5,13 +5,22 @@ let getHomepage = (req, res) => {
     connection.query(
         'SELECT * FROM `user` ',
         function (err, results, fields) {
-            console.log('>check mysql')
-            console.log(results); // results contains rows returned by server
-            data = results.map((row) => { return row });
-            console.log('>>check data: ', data)
-        }
-    )
-    return res.render('text/index.ejs', { dataUser: JSON.stringify(data) })
+            results.map((row) => {
+                data.push({
+                    id: row.id,
+                    email: row.email,
+                    address: row.address,
+                    firstname: row.firstname,
+                    lastname: row.lastname
+                })
+            });
+
+            return res.render('index.ejs', { dataUser: JSON.stringify(data) })
+        })
+
+    // console.log('>>check data: ', typeof (data), JSON.stringify(data))
+
+    // return res.render('text/index.ejs', { dataUser: JSON.stringify(data) })
 }
 
 module.exports = {
