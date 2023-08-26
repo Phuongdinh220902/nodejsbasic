@@ -7,6 +7,8 @@ require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 2209;
 
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
 
 //set up new enine
 configViewEngine(app);
