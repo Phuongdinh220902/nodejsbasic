@@ -1,28 +1,30 @@
-import connection from '../configs/connectDB';
+import pool from '../configs/connectDB';
 
-let getHomepage = (req, res) => {
-    let data = [];
-    connection.query(
-        'SELECT * FROM `user` ',
-        function (err, results, fields) {
-            results.map((row) => {
-                data.push({
-                    id: row.id,
-                    email: row.email,
-                    address: row.address,
-                    firstname: row.firstname,
-                    lastname: row.lastname
-                })
-            });
+let getHomepage = async (req, res) => {
 
-            return res.render('index.ejs', { dataUser: JSON.stringify(data) })
-        })
+    const [rows, fields] = await pool.execute('SELECT * FROM user');
 
-    // console.log('>>check data: ', typeof (data), JSON.stringify(data))
-
-    // return res.render('text/index.ejs', { dataUser: JSON.stringify(data) })
+    return res.render('index.ejs', { dataUser: rows })
+}
+let getDetailPage = async (req, res) => {
+    let userid = req.params.id;
+    let [user] = await pool.execute('SELECT * FROM user WHERE id = ?', [userid])
+    console.log('check req params: ', user)
+    return res.send(JSON.stringify(user))
 }
 
+
+// let getDetailPage = async (req, res) => {
+//     try {
+//         let id = req.params.id;
+//         let [userRows, userFields] = await pool.execute('SELECT * FROM user WHERE id = 1');
+//         console.log('check req params: ', userRows);
+//         return res.send('hello');
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).send('Internal Server Error');
+//     }
+// };
 module.exports = {
-    getHomepage
+    getHomepage, getDetailPage
 }
