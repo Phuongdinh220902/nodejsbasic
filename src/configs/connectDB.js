@@ -6,7 +6,7 @@ const pool = mysql.createPool({
     host: 'localhost',
     port: '3307',
     user: 'root',
-    database: 'nodejs_basic'
+    database: 'qltbhb'
 });
 
 // simple query
