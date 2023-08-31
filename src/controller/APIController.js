@@ -8,24 +8,8 @@ import pool from '../configs/connectDB';
 //     })
 // }
 
-
-// let createNewHB = async (req, res) => {
-//     let { tenHB, donVi, dieuKien, soTien, cachThamGia, hanDK, soLuongDK, tgToChuc } = req.body;
-
-//     if (!tenHB || !donVi || !dieuKien || !soTien || !cachThamGia || !hanDK || !soLuongDK || !tgToChuc) {
-//         return res.status(200).json({
-//             message: 'missing required params'
-//         })
-//     }
-
-//     const query = 'INSERT INTO hoc_bong(tenHB, donVi, dieuKien, soTien, cachThamGia, hanDK, soLuongDK, tgToChuc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-//     await pool.execute(query, [tenHB, donVi, dieuKien, soTien, cachThamGia, hanDK, soLuongDK, tgToChuc]);
-//     return res.status(200).json({
-//         message: 'ok'
-//     })
-// }
-
 let createNewHB = async (req, res) => {
+    console.log(req.body)
     try {
         const { tenHB, donVi, dieuKien, soTien, cachThamGia, hanDK, soLuongDK, tgToChuc } = req.body;
 
@@ -74,7 +58,7 @@ let trangchu = async (req, res) => {
 
 let tthb = async (req, res) => {
     let { maHB } = req.body;
-    console.log(maHB); // In maHB ra console
+    console.log(maHB);
     try {
         const [rows, fields] = await pool.execute("SELECT * FROM hoc_bong WHERE maHB = ?", [maHB])
         if (rows.length > 0) {
