@@ -50,9 +50,30 @@ let login = async (req, res) => {
 }
 
 let trangchu = async (req, res) => {
-    const [rows, fields] = await pool.execute("SELECT maHB, tenHB, hanDK FROM hoc_bong")
+    const [rows, fields] = await pool.execute("SELECT maHB, tenHB, donVi, hanDK FROM hoc_bong order by hanDK DESC")
+    const [rows2, fields2] = await pool.execute("SELECT DISTINCT tenHB FROM hoc_bong")
+    const [rows3, fields3] = await pool.execute("SELECT DISTINCT donVi FROM hoc_bong")
+    const [rows4, fields4] = await pool.execute("SELECT DISTINCT hanDK FROM hoc_bong")
+
     return res.status(200).json({
-        thongtin: rows
+        thongtin: rows,
+        tk2: rows2,
+        tk3: rows3,
+        tk4: rows4
+    })
+}
+
+let filtertenHB = async (req, res) => {
+    let { tenHB } = req.body;
+    const [rows, fields] = await pool.execute("SELECT * FROM hoc_bong WHERE tenHB = ?", [tenHB])
+    const [rows2, fields2] = await pool.execute("SELECT DISTINCT tenHB FROM hoc_bong")
+    const [rows3, fields3] = await pool.execute("SELECT DISTINCT donVi FROM hoc_bong")
+    const [rows4, fields4] = await pool.execute("SELECT DISTINCT hanDK FROM hoc_bong")
+    return res.status(200).json({
+        thongtin: rows,
+        tk2: rows2,
+        tk3: rows3,
+        tk4: rows4
     })
 }
 
@@ -75,5 +96,5 @@ let tthb = async (req, res) => {
 
 
 module.exports = {
-    login, trangchu, tthb, createNewHB
+    login, trangchu, tthb, createNewHB, filtertenHB
 }

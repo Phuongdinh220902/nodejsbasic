@@ -10,6 +10,7 @@ const initAPIRoute = (app) => {
     router.get('/trangchu', APIController.trangchu)
     router.post('/tthb', APIController.tthb)
     router.post('/createNewHB', APIController.createNewHB)
+    router.post('/filtertenHB', APIController.filtertenHB)
     return app.use('/api/v1/', router)
 }
 
