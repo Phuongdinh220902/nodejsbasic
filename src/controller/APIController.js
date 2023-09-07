@@ -93,8 +93,16 @@ let tthb = async (req, res) => {
     }
 }
 
+let updateHB = async (req, res) => {
+    let { maHB, tenHB, donVi, dieuKien, soTien, cachThamGia, hanDK, soLuongDK, tgToChuc } = req.body;
+    const [rows, fields] = await pool.execute("UPDATE hoc_bong SET tenHB = ?, donVi=?, dieuKien = ?, soTien = ?, cachThamGia = ?,hanDK =?, soLuongDK=?, tgToChuc=?  WHERE maHB=?", [tenHB, donVi, dieuKien, soTien, cachThamGia, hanDK, soLuongDK, tgToChuc, maHB])
+    return res.status(200).json({
+        "message": "ok"
+    })
+}
+
 
 
 module.exports = {
-    login, trangchu, tthb, createNewHB, filtertenHB
+    login, trangchu, tthb, createNewHB, filtertenHB, updateHB
 }

@@ -11,6 +11,7 @@ const initAPIRoute = (app) => {
     router.post('/tthb', APIController.tthb)
     router.post('/createNewHB', APIController.createNewHB)
     router.post('/filtertenHB', APIController.filtertenHB)
+    router.post('/updateHB', APIController.updateHB)
     return app.use('/api/v1/', router)
 }
 
