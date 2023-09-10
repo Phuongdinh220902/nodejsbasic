@@ -63,6 +63,7 @@ let trangchu = async (req, res) => {
     })
 }
 
+
 let filtertenHB = async (req, res) => {
     let { tenHB } = req.body;
     const [rows, fields] = await pool.execute("SELECT * FROM hoc_bong WHERE tenHB = ?", [tenHB])
@@ -101,8 +102,26 @@ let updateHB = async (req, res) => {
     })
 }
 
+let deleteHB = async (req, res) => {
+    let maHB = req.body.maHB;
+    if (!maHB) {
+        return res.status(400).json({ message: 'Mã học bổng không hợp lệ.' });
+    }
+
+    try {
+        const [rows, fields] = await pool.execute("DELETE FROM hoc_bong WHERE maHB=?", [maHB]);
+        if (rows.affectedRows > 0) {
+            return res.status(200).json({ message: 'Xóa học bổng thành công.' });
+        } else {
+            return res.status(404).json({ message: 'Không tìm thấy học bổng để xóa.' });
+        }
+    } catch (error) {
+        console.error("Lỗi khi xóa học bổng:", error);
+        return res.status(500).json({ message: 'Có lỗi xảy ra trong quá trình xóa học bổng.' });
+    }
+}
 
 
 module.exports = {
-    login, trangchu, tthb, createNewHB, filtertenHB, updateHB
+    login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB
 }
