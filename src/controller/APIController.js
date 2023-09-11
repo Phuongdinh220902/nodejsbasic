@@ -111,7 +111,7 @@ let deleteHB = async (req, res) => {
     try {
         const [rows, fields] = await pool.execute("DELETE FROM hoc_bong WHERE maHB=?", [maHB]);
         if (rows.affectedRows > 0) {
-            return res.status(200).json({ message: 'Xóa học bổng thành công.' });
+            return res.status(200).json({ message: 'ok' });
         } else {
             return res.status(404).json({ message: 'Không tìm thấy học bổng để xóa.' });
         }
