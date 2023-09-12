@@ -6,6 +6,8 @@ let router = express.Router();
 const initAPIRoute = (app) => {
     router.post("/login", APIController.login)
     router.get('/trangchu', APIController.trangchu)
+    router.get('/trangchu1', APIController.trangchu1)
+    router.get('/trangchu2', APIController.trangchu2)
     router.post('/tthb', APIController.tthb)
     router.post('/createNewHB', APIController.createNewHB)
     router.post('/filtertenHB', APIController.filtertenHB)

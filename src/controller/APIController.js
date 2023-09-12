@@ -63,6 +63,39 @@ let trangchu = async (req, res) => {
     })
 }
 
+let trangchu1 = async (req, res) => {
+    const currentDate = new Date().toISOString().slice(0, 10); // Lấy ngày hiện tại (định dạng YYYY-MM-DD)
+
+    const [rows, fields] = await pool.execute(`SELECT maHB, tenHB, donVi, hanDK FROM hoc_bong WHERE hanDK >= ? ORDER BY hanDK DESC`, [currentDate]);
+    const [rows2, fields2] = await pool.execute("SELECT DISTINCT tenHB FROM hoc_bong");
+    const [rows3, fields3] = await pool.execute("SELECT DISTINCT donVi FROM hoc_bong");
+    const [rows4, fields4] = await pool.execute("SELECT DISTINCT hanDK FROM hoc_bong");
+
+    return res.status(200).json({
+        thongtin: rows,
+        tk2: rows2,
+        tk3: rows3,
+        tk4: rows4
+    });
+}
+
+let trangchu2 = async (req, res) => {
+    const currentDate = new Date().toISOString().slice(0, 10); // Lấy ngày hiện tại (định dạng YYYY-MM-DD)
+
+    const [rows, fields] = await pool.execute(`SELECT maHB, tenHB, donVi, hanDK FROM hoc_bong WHERE hanDK < ? ORDER BY hanDK DESC`, [currentDate]);
+    const [rows2, fields2] = await pool.execute("SELECT DISTINCT tenHB FROM hoc_bong");
+    const [rows3, fields3] = await pool.execute("SELECT DISTINCT donVi FROM hoc_bong");
+    const [rows4, fields4] = await pool.execute("SELECT DISTINCT hanDK FROM hoc_bong");
+
+    return res.status(200).json({
+        thongtin: rows,
+        tk2: rows2,
+        tk3: rows3,
+        tk4: rows4
+    });
+}
+
+
 
 let filtertenHB = async (req, res) => {
     let { tenHB } = req.body;
@@ -123,5 +156,5 @@ let deleteHB = async (req, res) => {
 
 
 module.exports = {
-    login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB
+    login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB, trangchu1, trangchu2
 }
