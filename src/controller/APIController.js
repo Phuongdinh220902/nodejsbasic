@@ -80,7 +80,7 @@ let trangchu1 = async (req, res) => {
 }
 
 let trangchu2 = async (req, res) => {
-    const currentDate = new Date().toISOString().slice(0, 10); // Lấy ngày hiện tại (định dạng YYYY-MM-DD)
+    const currentDate = new Date().toISOString().slice(0, 10); // lấy ngày hiện tại (định dạng YYYY-MM-DD)
 
     const [rows, fields] = await pool.execute(`SELECT maHB, tenHB, donVi, hanDK FROM hoc_bong WHERE hanDK < ? ORDER BY hanDK DESC`, [currentDate]);
     const [rows2, fields2] = await pool.execute("SELECT DISTINCT tenHB FROM hoc_bong");
@@ -154,7 +154,31 @@ let deleteHB = async (req, res) => {
     }
 }
 
+let trangchusv = async (req, res) => {
+    const currentDate = new Date().toISOString().slice(0, 10); // Lấy ngày hiện tại (định dạng YYYY-MM-DD)
+
+    const [rows, fields] = await pool.execute("SELECT * FROM hoc_bong WHERE hanDK >= ? ORDER BY hanDK DESC", [currentDate])
+
+    return res.status(200).json({
+        thongtin: rows,
+    })
+}
+
+let loginsv = async (req, res) => {
+    let { email, password } = req.body;
+    const [rows, fields] = await pool.execute("SELECT * FROM sinh_vien WHERE email = ? and password = ?", [email, password])
+    if (rows.length > 0) {
+        return res.status(200).json({
+            check: "1"
+        })
+    } else {
+        return res.status(200).json({
+            check: "0",
+        })
+    }
+}
+
 
 module.exports = {
-    login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB, trangchu1, trangchu2
+    login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB, trangchu1, trangchu2, trangchusv, loginsv
 }
