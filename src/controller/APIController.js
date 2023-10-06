@@ -178,7 +178,41 @@ let loginsv = async (req, res) => {
     }
 }
 
+let registersv = async (req, res) => {
+    let { mssv, tenSV, email, password, nganh_hoc } = req.body;
+
+    // Kiểm tra xem sinh viên đã tồn tại với email này chưa
+    const [existingRows, existingFields] = await pool.execute("SELECT * FROM sinh_vien WHERE email = ?", [email]);
+
+    if (existingRows.length > 0) {
+        return res.status(400).json({
+            message: "Email đã tồn tại trong hệ thống",
+        });
+    }
+
+    try {
+
+        // Thêm sinh viên mới vào cơ sở dữ liệu
+        const [rows, fields] = await pool.execute(
+            "INSERT INTO sinh_vien (mssv, tenSV, email, password, nganh_hoc) VALUES (?, ?, ?, ?, ?)",
+            [mssv, tenSV, email, password, nganh_hoc]
+        );
+
+        return res.status(200).json({
+            check: "1",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(200).json({
+            check: "0",
+            // message: "Đã xảy ra lỗi trong quá trình đăng ký tài khoản",
+        });
+    }
+}
+
+
 
 module.exports = {
-    login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB, trangchu1, trangchu2, trangchusv, loginsv
+    login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB, trangchu1, trangchu2,
+    trangchusv, loginsv, registersv
 }
