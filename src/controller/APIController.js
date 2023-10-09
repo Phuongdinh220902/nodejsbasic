@@ -191,8 +191,6 @@ let registersv = async (req, res) => {
     }
 
     try {
-
-        // Thêm sinh viên mới vào cơ sở dữ liệu
         const [rows, fields] = await pool.execute(
             "INSERT INTO sinh_vien (mssv, tenSV, email, password, nganh_hoc) VALUES (?, ?, ?, ?, ?)",
             [mssv, tenSV, email, password, nganh_hoc]
@@ -205,10 +203,11 @@ let registersv = async (req, res) => {
         console.error(error);
         return res.status(200).json({
             check: "0",
-            // message: "Đã xảy ra lỗi trong quá trình đăng ký tài khoản",
         });
     }
 }
+
+
 
 
 
