@@ -167,9 +167,11 @@ let trangchusv = async (req, res) => {
 let loginsv = async (req, res) => {
     let { email, password } = req.body;
     const [rows, fields] = await pool.execute("SELECT * FROM sinh_vien WHERE email = ? and password = ?", [email, password])
+    console.log(rows[0]['id_sv'])
     if (rows.length > 0) {
         return res.status(200).json({
-            check: "1"
+            check: "1",
+            id_sv: rows[0]['id_sv']
         })
     } else {
         return res.status(200).json({
