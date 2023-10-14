@@ -209,11 +209,47 @@ let registersv = async (req, res) => {
     }
 }
 
+// let hsungtuyen = async (req, res) => {
+//     let maHB = req.body;
+//     console.log(req.body)
+//     const [rows, fields] = await pool.execute("SELECT id_sv, ten_file FROM ung_tuyen WHERE maHB = ?", [maHB]);
+//     if (rows.length > 0) {
+//         const info = rows[0];
+//         return res.status(200).json({ info });
+//     } else {
+//         return res.status(404).json({ message: "Không tìm thấy thông tin học bổng" });
+//     }
+//     return res.status(200).json({
+//         thongtin: rows,
+//     })
+// }
+
+let hsungtuyen = async (req, res) => {
+    try {
+        // Kiểm tra xem trường maHB có trong req.body không
+        if (!req.body.maHB) {
+            return res.status(400).json({ message: "Thiếu thông tin mã học bổng" });
+        }
+
+        const maHB = req.body.maHB; // Giả sử trường mã học bổng là maHB
+        console.log(req.body);
+        const [rows, fields] = await pool.execute("SELECT id_sv, ten_file FROM ung_tuyen WHERE maHB = ?", [maHB]);
+        if (rows.length > 0) {
+            const info = rows[0];
+            return res.status(200).json({ info });
+        } else {
+            return res.status(404).json({ message: "Không tìm thấy thông tin học bổng" });
+        }
+    } catch (error) {
+        console.error("Error occurred: ", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
 
 
 
 
 module.exports = {
     login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB, trangchu1, trangchu2,
-    trangchusv, loginsv, registersv
+    trangchusv, loginsv, registersv, hsungtuyen
 }
