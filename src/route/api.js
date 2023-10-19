@@ -21,6 +21,7 @@ const initAPIRoute = (app) => {
     router.post("/loginsv", APIController.loginsv)
     router.post('/registersv', APIController.registersv)
     router.post('/hsungtuyen', APIController.hsungtuyen)
+    router.post('/getMaXacNhan', APIController.getMaXacNhan)
 
 
     var filename = ''

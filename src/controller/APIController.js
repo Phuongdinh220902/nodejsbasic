@@ -1,5 +1,7 @@
 const { json } = require("body-parser")
 import pool from '../configs/connectDB';
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 // let getAllHB = async (req, res) => {
 //     const [rows, fields] = await pool.execute("SELECT * FROM hoc_bong")
@@ -247,9 +249,75 @@ let hsungtuyen = async (req, res) => {
 }
 
 
+let getMaXacNhan = async (req, res) => {
+    let email = req.body.email
+    // let testAccount = await nodemailer.createTestAccount();
+    const generateVerificationCode = (length) => {
+        // return Math.floor(1000 + Math.random() * 9000).toString();
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    };
+
+    const verificationCode = generateVerificationCode(6);
+
+    // console.log(verificationCode)
+
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        service: 'gmail',
+        auth: {
+            user: "ld7941682@gmail.com",
+            pass: "ijippjqyfxuyqgxs",
+        },
+    });
+
+    const [r1, f1] = await pool.execute("SELECT * FROM sinh_vien WHERE email = ?", [email])
+
+    if (r1.length == 0) {
+        return res.status(200).json({
+            check: "0",
+            msg: "Email không tồn tại"
+        })
+    }
+
+    // const [r2, f2] = await pool.execute("UPDATE users set maxacnhan=? where email = ?", [verificationCode, email])
+    const [r2, f2] = await pool.execute('SELECT password FROM sinh_vien WHERE email = ?', [email])
+
+    const old_password = r2[0].password
+    // console.log(old_password)
+    await pool.execute("UPDATE sinh_vien SET password = ? WHERE email = ?", [verificationCode, email])
+    const mailOptions = {
+        from: 'ld7941682@gmail.com',
+        to: email,
+        subject: 'New Password',
+        text: `Your new password is: ${verificationCode}`,
+    };
+
+    await transporter.sendMail(mailOptions, async function (error, info) {
+        if (error) {
+            console.log(error);
+            await pool.execute("UPDATE sinh_vien SET password = ? WHERE email = ?", [
+                old_password,
+                email,
+            ]);
+            return res.status(200).json({ check: "0" });
+        } else {
+            return res.status(200).json({ check: "1" });
+        }
+    });
+}
+
+
 
 
 module.exports = {
     login, trangchu, tthb, createNewHB, filtertenHB, updateHB, deleteHB, trangchu1, trangchu2,
-    trangchusv, loginsv, registersv, hsungtuyen
+    trangchusv, loginsv, registersv, hsungtuyen, getMaXacNhan
 }
