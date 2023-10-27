@@ -169,7 +169,6 @@ let trangchusv = async (req, res) => {
 let loginsv = async (req, res) => {
     let { email, password } = req.body;
     const [rows, fields] = await pool.execute("SELECT * FROM sinh_vien WHERE email = ? and password = ?", [email, password])
-    console.log(rows[0]['id_sv'])
     if (rows.length > 0) {
         return res.status(200).json({
             check: "1",
@@ -212,18 +211,28 @@ let registersv = async (req, res) => {
 }
 
 // let hsungtuyen = async (req, res) => {
-//     let maHB = req.body;
-//     console.log(req.body)
-//     const [rows, fields] = await pool.execute("SELECT id_sv, ten_file FROM ung_tuyen WHERE maHB = ?", [maHB]);
-//     if (rows.length > 0) {
-//         const info = rows[0];
-//         return res.status(200).json({ info });
-//     } else {
-//         return res.status(404).json({ message: "Không tìm thấy thông tin học bổng" });
+//     try {
+//         // Kiểm tra xem trường maHB có trong req.body không
+//         if (!req.body.maHB) {
+//             return res.status(400).json({ message: "Thiếu thông tin mã học bổng" });
+//         }
+
+//         const maHB = req.body.maHB; // Giả sử trường mã học bổng là maHB
+//         console.log(req.body);
+//         const [rows, fields] = await pool.execute("SELECT id_sv, ten_file FROM ung_tuyen WHERE maHB = ?", [maHB]);
+//         if (rows.length > 0) {
+//             const info = rows[0];
+//             const fileUrl = `http://localhost:2209/ung_tuyen/${info.ten_file}`; // Đường dẫn trực tiếp đến file public trên máy chủ
+//             // Thêm đường dẫn trực tiếp đến file vào thông tin trả về
+//             info.fileUrl = fileUrl;
+//             return res.status(200).json({ info });
+//         } else {
+//             return res.status(404).json({ message: "Không tìm thấy thông tin học bổng" });
+//         }
+//     } catch (error) {
+//         console.error("Error occurred: ", error);
+//         return res.status(500).json({ message: "Internal Server Error" });
 //     }
-//     return res.status(200).json({
-//         thongtin: rows,
-//     })
 // }
 
 let hsungtuyen = async (req, res) => {
@@ -237,8 +246,8 @@ let hsungtuyen = async (req, res) => {
         console.log(req.body);
         const [rows, fields] = await pool.execute("SELECT id_sv, ten_file FROM ung_tuyen WHERE maHB = ?", [maHB]);
         if (rows.length > 0) {
-            const info = rows[0];
-            return res.status(200).json({ info });
+            console.log(rows)
+            return res.status(200).json({ sv: rows });
         } else {
             return res.status(404).json({ message: "Không tìm thấy thông tin học bổng" });
         }
@@ -247,6 +256,7 @@ let hsungtuyen = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
 
 
 let getMaXacNhan = async (req, res) => {
@@ -281,6 +291,7 @@ let getMaXacNhan = async (req, res) => {
     const [r1, f1] = await pool.execute("SELECT * FROM sinh_vien WHERE email = ?", [email])
 
     if (r1.length == 0) {
+        console.log("em mail ko ton tai")
         return res.status(200).json({
             check: "0",
             msg: "Email không tồn tại"
@@ -309,10 +320,29 @@ let getMaXacNhan = async (req, res) => {
             ]);
             return res.status(200).json({ check: "0" });
         } else {
+            console.log("Ok")
             return res.status(200).json({ check: "1" });
         }
     });
 }
+
+let getfile = async (req, res) => {
+    const fileId = req.params.id;
+
+    try {
+        const [rows, fields] = await pool.execute('SELECT ten_file FROM ung_tuyen WHERE id = ?', [fileId]);
+        if (rows.length > 0) {
+            const fileUrl = rows[0].ten_file; // Đường dẫn tới file trong cơ sở dữ liệu
+            // Code để trả về file tại đây
+            res.download(fileUrl); // Hoặc sử dụng res.sendFile(fileUrl);
+        } else {
+            res.status(404).json({ error: 'File not found' });
+        }
+    } catch (error) {
+        console.error('Internal Server Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 
